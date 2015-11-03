@@ -1,0 +1,43 @@
+<project name="DemoReflection" basedir="." default="main">
+
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="doc.dir" value="doc"/>
+    <property name="main-class" value="pack.seiwaldSchoergnhofer.DemoReflection"/>
+
+    <target name="clean" description="cleans the build, doc and dist directories">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${build.dir}" includes="**/*"/>
+			<fileset dir="${doc.dir}" includes="**/*" />
+			<fileset dir="${dist.dir}" includes="**/*" />
+		</delete>
+    </target>
+
+    <target name="compile" description="compiles all classes of the project">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false"/>
+    </target>
+
+    <target name="jar" depends="compile" description="creates a executable jar-file of the project">
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar" description="executes the created jar-file">
+        <java jar="${dist.dir}/${ant.project.name}.jar" fork="true"/>
+    </target>
+
+    <target name="doc" depends="compile" description="creates javadoc for the project">
+		<mkdir dir="${doc.dir}"/>
+		<javadoc sourcepath="${src.dir}" destdir="${doc.dir}"/>
+    </target>
+
+    <target name="main" depends="doc,run"/>
+
+</project>
